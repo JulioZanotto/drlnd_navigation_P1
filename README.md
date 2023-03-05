@@ -18,6 +18,18 @@ The state space has 37 dimensions and contains the agent's velocity, along with 
 - **`2`** - turn left.
 - **`3`** - turn right.
 
+Example of the state array:
+```
+States look like: [1.         0.         0.         0.         0.84408134 0.
+ 0.         1.         0.         0.0748472  0.         1.
+ 0.         0.         0.25755    1.         0.         0.
+ 0.         0.74177343 0.         1.         0.         0.
+ 0.25854847 0.         0.         1.         0.         0.09355672
+ 0.         1.         0.         0.         0.31969345 0.
+ 0.        ]
+States have length: 37
+```
+
 The task is episodic, and in order to solve the environment, your agent must get an average score of +13 over 100 consecutive episodes.
 
 ### Getting Started
@@ -34,22 +46,49 @@ The task is episodic, and in order to solve the environment, your agent must get
 
 2. Place the file in the course GitHub repository, in the `p1_navigation/` folder, and unzip (or decompress) the file. 
 
+3. Create (and activate) a new environment with Python 3.6.
+
+	- __Linux__ or __Mac__: 
+	```bash
+	conda create --name drlnd python=3.6
+	source activate drlnd
+	```
+	- __Windows__: 
+	```bash
+	conda create --name drlnd python=3.6 
+	activate drlnd
+	```
+
+4. Clone the repository (if you haven't already!), and navigate to the `python/` folder.  Then, install several dependencies.
+    ```bash
+    cd python
+    pip install .
+    ```
+
 ### Instructions
 
-Follow the instructions in `Navigation.ipynb` to get started with training your own agent!  
+Follow the instructions in `Navigation.ipynb` to get started with training your own agent!
 
-### (Optional) Challenge: Learning from Pixels
+You can also use the train.py to train your agent for 2.000 episodes.
 
-After you have successfully completed the project, if you're looking for an additional challenge, you have come to the right place!  In the project, your agent learned from information such as its velocity, along with ray-based perception of objects around its forward direction.  A more challenging task would be to learn directly from pixels!
+```bash
+python train.py --path path/to/unity
+```
 
-To solve this harder task, you'll need to download a new Unity environment.  This environment is almost identical to the project environment, where the only difference is that the state is an 84 x 84 RGB image, corresponding to the agent's first-person view.  (**Note**: Udacity students should not submit a project with this new environment.)
+In my case the path was "./Banana_Linux/Banana.x86_64"
 
-You need only select the environment that matches your operating system:
-- Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Linux.zip)
-- Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana.app.zip)
-- Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Windows_x86.zip)
-- Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/VisualBanana_Windows_x86_64.zip)
+#### Evaluation
+Run the following to watch the trained Agent !!
 
-Then, place the file in the `p1_navigation/` folder in the course GitHub repository, and unzip (or decompress) the file.  Next, open `Navigation_Pixels.ipynb` and follow the instructions to learn how to use the Python API to control the agent.
+```bash
+python evaluate.py
+```
+or
 
-(_For AWS_) If you'd like to train the agent on AWS, you must follow the instructions to [set up X Server](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md), and then download the environment for the **Linux** operating system above.
+```bash
+python evaluate.py --path path/to/unity --model chk_banana.pth
+```
+If you have different paths to the unity env and the saved model.
+
+
+

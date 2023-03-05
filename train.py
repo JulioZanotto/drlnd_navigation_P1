@@ -4,16 +4,31 @@ import matplotlib.pyplot as plt
 import torch
 from unityagents import UnityEnvironment
 import numpy as np
+import argparse
 
-env = UnityEnvironment(file_name="./Banana_Linux/Banana.x86_64")
 
-# get the default brain
-brain_name = env.brain_names[0]
-brain = env.brains[brain_name]
+def train(n_episodes=2000, eps_start=1.0, eps_end=0.01, eps_decay=0.995, 
+          path='./Banana_Linux/Banana.x86_64'):
+    
+    '''
+    Function to train the agent for 2000 episodes.
 
-agent = Agent(state_size=37, action_size=4, seed=0)
+    Args:
+    Path = Path to the Unity Banana environment
 
-def train(n_episodes=2000, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
+    Returns:
+    None
+
+    Saves locally the agent as chk_banana_term.pth
+    '''
+
+    env = UnityEnvironment(file_name=path)
+
+    # get the default brain
+    brain_name = env.brain_names[0]
+
+    agent = Agent(state_size=37, action_size=4, seed=0)
+
     scores = []                        # list containing scores from each episode
     scores_window = deque(maxlen=100)  # last 100 scores
     eps = eps_start                    # initialize epsilon
@@ -32,19 +47,31 @@ def train(n_episodes=2000, eps_start=1.0, eps_end=0.01, eps_decay=0.995):
             agent.step(state, action, reward, next_state, done)
             state = next_state
             score += reward
-    #         if done:
-    #             break 
+
         scores_window.append(score)       # save most recent score
         scores.append(score)              # save most recent score
         eps = max(eps_end, eps_decay*eps) # decrease epsilon
         print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)), end="")
         if i_episode % 100 == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
-        if np.mean(scores_window)>=14.0:
+        if np.mean(scores_window)>=15.0:
             print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-100, np.mean(scores_window)))
-            torch.save(agent.qnetwork_local.state_dict(), 'chk_banana.pth')
+            torch.save(agent.qnetwork_local.state_dict(), 'chk_banana_term.pth')
             break
+
+    # plot the scores
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    plt.plot(np.arange(len(scores)), scores)
+    plt.ylabel('Score')
+    plt.xlabel('Episode #')
+    plt.show()
 
 
 if __name__ == "__main__":
-    train()
+    parser = argparse.ArgumentParser(description = 'Udacity DQN training agent')
+    parser.add_argument('--path', action='store', dest='path',
+                        default='./Banana_Linux/Banana.x86_64', 
+                        help='Path to the unpacked banana environment')
+    arguments = parser.parse_args()
+    train(path=arguments.path)
